@@ -351,6 +351,7 @@ describe('WalletSend confirm and sent', () => {
     expect(container.querySelector('.animate-spin')).not.toBeNull();
     const cancel = screen.getByRole('button', { name: 'Cancel' }) as HTMLButtonElement;
     expect(cancel.textContent).toBe('Cancel');
+    expect(cancel.className).toContain('min-h-11');
     expect(cancel.disabled).toBe(true);
     fireEvent.click(cancel);
     expect(send.cancel).not.toHaveBeenCalled();
