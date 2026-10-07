@@ -28,7 +28,7 @@ jobs:
           node scripts/sync-handbook-images.mjs 2>&1 | grep -o '[^ ]*-linux.png →' | sed 's/ →//' | sort -u | while read f; do cp "$ph" "e2e/visual.spec.ts-snapshots/$f"; done
           git status --short | wc -l
       - name: Visual (update changed)
-        run: npx playwright test e2e/visual.spec.ts --project=${{ matrix.project }} --update-snapshots=changed --reporter=line
+        run: npx playwright test e2e/visual.spec.ts --project=${{ matrix.project }} --update-snapshots=changed --reporter=line -g 'payment-load-error'
         env:
           HOSTNAME: 0.0.0.0
       - name: Changed snapshots
