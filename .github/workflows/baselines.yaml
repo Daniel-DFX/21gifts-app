@@ -1,7 +1,8 @@
 name: Baselines
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [tmp-baselines-bd59b564]
 
 permissions:
   contents: read
