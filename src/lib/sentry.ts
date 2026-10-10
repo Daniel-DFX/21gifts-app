@@ -98,6 +98,7 @@ const REDACTIONS: ReadonlyArray<readonly [RegExp, string]> = [
   [/\b(?:lnbc|lntb|lnurl)[0-9a-z]{10,}/gi, FILTERED],
   // Spark addresses.
   [/\bspark(?:rt)?1[0-9a-z]{10,}/gi, FILTERED],
+  [/\bsp(?:rt|t)?1[02-9ac-hj-np-z]{20,}/gi, FILTERED],
   // Base-chain (bech32) addresses; longer than a 32-digit trace id.
   [/\b(?:bc|tb|bcrt)1[02-9ac-hj-np-z]{36,87}\b/gi, FILTERED],
   // Keys, hashes, preimages, view keys: 64 or more hex digits.
@@ -155,7 +156,6 @@ export interface SentryInitOptions {
   environment?: string;
   tunnel?: string;
   tracesSampleRate: number;
-  tracesSampler: () => number;
   traceLifecycle: 'static';
   tracePropagationTargets: string[];
   sendClientReports: false;
@@ -503,9 +503,6 @@ export function sentryOptions(runtime: 'browser' | 'server'): SentryInitOptions 
     dsn: dsn as string,
     release: getAppVersion(),
     tracesSampleRate,
-    // The page's trace meta tags come from the server, which samples nothing.
-    // The rate alone decides, so a page load does not inherit that "no".
-    tracesSampler: () => tracesSampleRate,
     // Whole transactions, so `beforeSendTransaction` sees every span before it is sent.
     traceLifecycle: 'static',
     tracePropagationTargets: [],
