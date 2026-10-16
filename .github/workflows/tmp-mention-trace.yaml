@@ -1,0 +1,31 @@
+name: Mention trace (temporary)
+on:
+  push:
+    branches: [tmp/mention-trace]
+permissions:
+  contents: read
+jobs:
+  trace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [desktop-light, desktop-dark, mobile-light, mobile-dark]
+        attempt: [1, 2]
+    container:
+      image: mcr.microsoft.com/playwright:v1.61.1-noble
+      options: --ipc=host
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npx playwright test e2e/visual.spec.ts --project=${{ matrix.project }} --trace=retain-on-failure
+        env:
+          HOSTNAME: 0.0.0.0
+          CI: '1'
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trace-${{ matrix.project }}-${{ matrix.attempt }}
+          path: test-results
+          retention-days: 3
